@@ -107,4 +107,39 @@ def BirthBeforeMarriage(indiListData, famListData):
     else:
         print("These individuals' birth dates after their marriage dates")
         print(dateList)
+	
+#User Story 3
+		
+def BirthBeforeDeath(indiListData):
+    for i in indiListData:
+        if(i[4] != 0):
+            if(i[3] > i[4]):
+                dateList.append(i[1])
+                print(i[1] + " had their birth date after death date")
+    if(len(dateList) == 0):
+        print("After the date of death,nobody is born")
+    else:
+        print("These individuals' birth dates come after their marriage dates ")
+        print(dateList)
+#User Story 4
+
+def MarriageBeforeDivorce(famListData):
+    for i in famListData:
+        if(i[4] != 0):
+            if(i[3] > i[4]):
+                dateList.append(i[0])
+                print(i[0] + " had their wedding date after their divorce date")
+    if(len(dateList) == 0):
+        print("After the date of the divorce, nobody gets married ")
+    else:
+        print("These individuals' wedding dates come after their divorce dates ")
+        print(dateList)
+		
+#This function returns all the death dates
+def getDeathDateByID(indiListData, id):
+    for i in indiListData:
+        if(i[0] == id):
+            if(i[4] != 0):
+                return i[4]
+
         
