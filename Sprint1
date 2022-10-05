@@ -141,5 +141,72 @@ def getDeathDateByID(indiListData, id):
         if(i[0] == id):
             if(i[4] != 0):
                 return i[4]
+#User Story 5
+def MarriageBeforeDeath(indiListData, famListData):
+#for family
+    for i in famListData:
+        if(getDeathDateByID(indiListData, i[1]) != None):  
+            if(i[3] > getDeathDateByID(indiListData, i[1])):  #the function is called here to get all the death dates by id
+                dateList.append(i[0])
+                print(i[0] + " have mariage dates after death dates")
+        if(getDeathDateByID(indiListData, i[2]) != None):
+            if(i[3] > getDeathDateByID(indiListData, i[2])):
+                dateList.append(i[0])
+                print(i[0] + " have marriage dates after death dates")
+    if(len(dateList) == 0):
+        print("There are no marriages after the death dates")
+    else:
+        print("These individuals' have marriage dates after their death dates ")
+        print(dateList)
+
+#User Story 6
+
+def DivorceBeforeDeath(indiListData, famListData):
+#for family
+
+    for i in famListData:
+        if(i[4] != 0):
+            if(getDeathDateByID(indiListData, i[1]) != None):     #the function is called here to get all the death dates by id
+                if(i[4] > getDeathDateByID(indiListData, i[1])):
+                    dateList.append(i[0])
+                    print(i[0] + " have divorce dates after death dates")
+            if(getDeathDateByID(indiListData, i[2]) != None):
+                if(i[4] > getDeathDateByID(indiListData, i[2])):
+                    dateList.append(i[0])
+                    print(i[0] + " have divorce dates after death dates")
+    if(len(dateList) == 0):
+        print("There are no divorce after the death dates")
+    else:
+        print("These individuals' have divorce dates after their death dates ")
+        print(dateList)
+		
+		
+
+def getAgeUsingID(indiListData, id):
+	flag = 0
+	for i in indiListData:
+		if(i[0] == id):
+			birthdayDay = i[3]
+			value = birthdayDay.split('-')
+			birthYear = int(value[0])
+			birthMonth = int(value[1])
+			birthdayDay = int(value[2])
+			if(i[4] != 0):
+				deathDay = i[4]
+				flag = 1
+				
+	if(flag == 1):
+		value = deathDay.split('-')
+		deathYear = int(value[0])
+		deathMonth = int(value[1])
+		deathDay = int(value[2])
+		return deathYear - birthYear - ((deathMonth, deathDay) < (birthMonth, birthdayDay))
+    
+	
+	currentDay = currentDate().split('-')
+	currentYear = int(currentDay[0])
+	currentMonth = int(currentDay[1])
+	currentDay = int(currentDay[2])
+	return currentYear - birthYear - ((currentMonth, currentDay) < (birthMonth, birthdayDay))	
 
         
