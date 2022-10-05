@@ -140,8 +140,8 @@ def main(file_name):
     indiListData, famListData = getcomParse(file_name)
     indiListData.sort()
     famListData.sort()
-    birthBeforeMarriage(indiListData, famListData)
+    BirthBeforeMarriage(indiListData, famListData)
 
    
-fileInput= 'C:\Users\dheer\Desktop\Agile\Family.ged'
+fileInput= r'C:\Users\dheer\Desktop\Agile\Family.ged'
 main(fileInput)
