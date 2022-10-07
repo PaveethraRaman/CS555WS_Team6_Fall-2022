@@ -209,4 +209,141 @@ def getAgeUsingID(indiListData, id):
 	currentDay = int(currentDay[2])
 	return currentYear - birthYear - ((currentMonth, currentDay) < (birthMonth, birthdayDay))	
 
-        
+#User Story 7
+
+def LessThan150Years(indiListData):
+    for i in indiListData:
+        if(getAgeUsingID(indiListData, i[0]) >= 150):  #calling the function to get the age using id
+            dateList.append(i[0])
+            print(i[0] + " have their age more than 150")
+    if(len(dateList)==0):
+        print("All have ages less than 150 ")
+    else:
+        print("These individuals' are aged more than 150 ")
+        print(dateList)
+
+#Function t get birthdates  using id
+def getBirthDateUsingID(indiListData, id):
+    for i in indiListData:
+        if(i[0] == id):
+            return i[3]
+			
+
+def spaceof9month(dateValue):
+    dateData = dateValue.split('-')
+    if(int(dateData[1]) <= 3):
+        dateData[1] = str(int(dateData[1]) + 9)
+    else:
+        dateData[1] = '0'+str(int(dateData[1]) - 3)
+        dateData[0] = str(int(dateData[0]) + 1)
+    dateValue = dateData[0] + '-' + dateData[1] + '-' + dateData[2]
+    return dateValue
+
+
+#User Story 8
+def BirthBeforeMarriageofParents(indiListData, famListData):
+    for i in famListData:
+        if(i[5] != []):
+            dateData = i[3]
+            for j in i[5]:
+                if(getBirthDateUsingID(indiListData, j) <= dateData): #getting birthdates using id
+                    dateList.append(j)
+                    print(j + " was born before the marriage of their parents.")
+                    continue
+                if(i[4] != 0):
+                    finalDate = spaceof9month(i[4])
+                    if(getBirthDateUsingID(indiListData, j) >= finalDate):   
+                        dateList.append(j)
+                        print(j + " was born after the marriage of their parents")
+                        continue
+    if(len(dateList)==0):
+        print("All children were born after the marriage of their parents :)")
+    else:
+        print("These children were born before marriage of their parents :(")
+        print(dateList)
+
+
+#parsing the gedcom file 
+def getcomParse(file_name):
+    f = open(file_name,'r')
+    indiValue = 0
+    famValue = 0
+    indiListData = []
+    famListData = []
+    indiData = individualList()
+    famData = familyList()
+    for line in f:
+        s = line.split()
+        if(s != []):
+            if(s[0] == '0'):
+                if(indiValue == 1):
+                    indiListData.append(indiData)
+                    indiData = individualList()
+                    indiValue = 0
+                if(famValue == 1):
+                    famListData.append(famData)
+                    famData = familyList()
+                    famValue = 0
+                if(s[1] in ['NOTE', 'HEAD', 'TRLR']):
+                    pass
+                else:
+                    if(s[2] == 'INDI'):
+                        indiValue = 1
+                        indiData[0] = (s[1])
+                    if(s[2] == 'FAM'):
+                        famValue = 1
+                        famData[0] = (s[1])
+            if(s[0] == '1'):
+                if(s[1] == 'NAME'):
+                    indiData[1] = s[2] + " " + lastName(s[3])
+                if(s[1] == 'SEX'):
+                    indiData[2] = s[2]
+                if(s[1] in ['BIRT', 'DEAT', 'MARR', 'DIV']):
+                    date_id = s[1]
+                if(s[1] == 'FAMS'):
+                    indiData[5].append(s[2])
+                if(s[1] == 'FAMC'):
+                    indiData[6] = s[2]
+                if(s[1] == 'HUSB'):
+                    famData[1] = s[2]
+                if(s[1] == 'WIFE'):
+                    famData[2] = s[2]
+                if(s[1] == 'CHIL'):
+                    famData[5].append(s[2])
+            if(s[0] == '2'):
+                if(s[1] == 'DATE'):
+                    date = s[4] + " " + s[3] + " " + s[2]
+                    if(date_id == 'BIRT'):
+                        indiData[3] = convertDateFormat(date)
+                    if(date_id == 'DEAT'):
+                        indiData[4] = convertDateFormat(date)
+                    if(date_id == 'MARR'):
+                        famData[3] = convertDateFormat(date)
+                    if(date_id == 'DIV'):
+                        famData[4] = convertDateFormat(date)
+    return indiListData, famListData
+
+
+def main(file_name):
+    indiListData, famListData = getcomParse(file_name)
+    indiListData.sort()
+    famListData.sort()
+    DatesBeforeCurrentDate(indiListData, famListData)
+    BirthBeforeMarriage(indiListData, famListData)
+    BirthBeforeDeath(indiListData)
+    MarriageBeforeDivorce(famListData)
+    MarriageBeforeDeath(indiListData, famListData)
+    DivorceBeforeDeath(indiListData, famListData)
+    LessThan150Years(indiListData)
+    BirthBeforeMarriageofParents(indiListData, famListData)
+    for i in indiListData:
+        table = PrettyTable(["ID", "Name" , "Sex", "Birth Date", "Death Date" , "Child" , "Spouse"])
+        table.add_row([i[0] , i[1], i[2],i[3], i[4] , i[5] , i[6]])
+        print (table)
+    for i in famListData:
+        table1 = PrettyTable(["ID", "Husband's Name" , "Wife's Name"])
+        table1.add_row([i[0] , getNameUsingID(indiListData,i[1]) , getNameUsingID(indiListData,i[2]) ])
+        print (table1)
+
+fileInput= r'C:\Users\dheer\Desktop\Agile\Family.ged'
+main(fileInput)
