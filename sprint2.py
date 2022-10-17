@@ -171,6 +171,126 @@ def getAgeByID(ind_list, id):
     c_date = int(c_date[2])
     return c_year - b_year - ((c_month, c_date) < (b_month, b_date))
 
+#User Story 11
+#This function is to show the data if marriage has occured during marriage to another spouse
+
+def getSpouseNameById(famListData, famId, spouseId):
+    for i in famListData:
+        if(i[0] == famId):
+            if(i[1] == spouseId):
+                return i[2]
+            if(i[2] == spouseId):
+                return i[1]
+
+def getDivorceDateById(famListData, famId):
+    for i in famListData:
+        if(i[0] == famId):
+            if(i[4] != 0):
+                return i[4]
+def getMarriageDateById(famListData, id):
+    for i in famListData:
+        if(i[0] == id):
+            return i[3]
+def noBigamy(indiListData, famListData):
+    noBigamyList = []
+    for i in indiListData:
+        family = []
+        t = []
+        if(len(i[5]) > 1):
+            selfId = i[0]
+            for j in i[5]:
+                t.append(getMarriageDateById(famListData, j))
+                t.append(j)
+                t.append(getSpouseNameById(famListData, j, selfId))
+                t.append(getDivorceDateById(famListData, j))
+                t.append(getDeathDateByID(indiListData, getSpouseNameById(famListData, j, selfId)))
+                family.append(t)
+                t = []
+            family.sort()
+            for z in range(1, len(family)):
+                if(family[z-1][3] == None and family[z-1][4] == None):
+                    noBigamyList.append(selfId)
+                    print("Person with id " + selfId + " is married to person " + family[z][2] + " with family id " + family[z][1] + " while  still in marriage with person with id " + family[z-1][2] + " in family " + family[z-1][1])
+                else:
+                    if(family[z-1][3] != None):
+                        if(family[z][0] < family[z-1][3]):
+                            noBigamyList.append(selfId)
+                            print("Person with id" + selfId + " is married to person " + family[z][2] + " with family id " + family[z][1] + " before filing divorce with spouse " + family[z-1][2] + " in family " + family[z-1][1])
+                    if(family[z-1][4] != None):
+                        if(family[z][0] < family[z-1][4]):
+                            noBigamyList.append(selfId)
+                            print("Person with id " + selfId + " is married to person " + family[z][2] + " with family id  " + family[z][1] + " before spouse's death" + family[z-1][2] + " in family " + family[z-1][1])
+    if(len(noBigamyList) == 0):
+        print("The individuals in the Family tree are not involved in Bigamy.")
+    else:
+        print("The individual(s) involved in Bigamy: ")
+        print(noBigamyList)
+	
+#UserStory 13
+#This function is to show the data if the Birth dates of siblings are more than 8 months apart or less than 2 days apart (twins may be born one day apart, e.g. 11:59 PM and 12:02 AM the following calendar day)
+
+def SiblingsSpacing(famListData, indiListData):
+    for i in famListData:
+        if(i[5] != [] and len(i[5]) > 1):
+            siblingPairs = list(iter.combinations(i[5], 2))
+            for j in siblingPairs:
+                siblings_months = abs(difference_months(getBirthDateByID(indiListData, j[0]), getBirthDateByID(indiListData, j[1])))
+                siblings_days = abs(difference_days(getBirthDateByID(indiListData, j[0]), getBirthDateByID(indiListData, j[1])))
+                if(siblings_months <= 8 and siblings_days >= 3):
+                    dateList.append(j)
+                    print("Siblings " + j[0] + " and " + j[1] + " have their birth dates eight months apart")
+                if(siblings_months == 0 and siblings_days >= 2):
+                    dateList.append(j)
+                    print("Siblings " + j[0] + " and " + j[1] + " have their birth days 2 or more days apart")
+    if(len(dateList)==0):
+        print("All the Siblings have correct spacing")
+    else:
+        print("The following Sibling pairs have bad birth date spacings")
+        print(dateList)
+
+#calculate difference in months
+def difference_months(dateData1, dateData2):
+    temp1 = dateData1.split('-')
+    temp2 = dateData2.split('-')
+    ndateData1 = datetime.date(int(temp1[0]), int(temp1[1]), int(temp1[2]))
+    ndateData2 = datetime.date(int(temp2[0]), int(temp2[1]), int(temp2[2]))
+    return int((ndateData1 - ndateData2).days / 30.4)
+
+#calculate difference in days
+def difference_days(dateData1, dateData2):
+    temp1 = dateData1.split('-')
+    temp2 = dateData2.split('-')
+    ndateData1 = datetime.date(int(temp1[0]), int(temp1[1]), int(temp1[2]))
+    ndateData2 = datetime.date(int(temp2[0]), int(temp2[1]), int(temp2[2]))
+    return abs(int((ndateData1 - ndateData2).days))
+	
+	
+	
+#User Story 14
+#This function is to show the data if there are no more than five siblings should be born at the same time
+
+
+def multipleBirthslessThan5(list_individual,list_family):
+    multipleBirthsList = []
+    for i in list_family:
+        birthList = []
+        if(i[5] != [] and len(i[5]) > 5):
+            for j in i[5]:
+                birthList.append(getBirthDateByID(list_individual, j))
+            birthListLength = len(birthList)
+            birthListSet = set(birthList)
+            listsetLength = len(birthListSet)
+            m = (birthListLength - listsetLength)
+            if( m >= 5):
+                multipleBirthsList.append(i[0])
+                print("Family with ID " + i[0] + " is not valid since it had more than 5 births.")
+    if(len(multipleBirthsList)!=0):
+        print("Families which  had more than 5 kids during the time of birth:")
+        print(multipleBirthsList)       
+    else:
+        print("No families with more than 5 kids.")
+
+
 
 
 
