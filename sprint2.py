@@ -121,6 +121,24 @@ def birthBeforeDeathOfParents(indiListData, famListData):
         print(" These children born after death of their parent's ")
         print(dateList)
 	
+#User Story 10
+#This function is to show the data if the  Marriage has happened at least 14 years after birth of both spouses (parents must be at least 14 years old)
+
+def marriageAfter14(indiListData, famListData):
+    marriagelist = []
+    for i in famListData:
+        if(getMarriageByID(indiListData, i[1], i[3])<14):
+            marriagelist.append(i[1])
+            print("Individual with ID " + i[1] + " is married before age 14 in family with ID" + i[0])
+        if(getMarriageByID(indiListData, i[2], i[3])<14):
+            marriagelist.append(i[2])
+            print("Individual with ID " + i[2] + " is married before age 14 in family with ID " + i[0])
+
+    if(len(marriagelist) != 0):
+        print("The individuals listed were married before age 14: ")
+        print(marriagelist)       
+    else:
+        print("No individuals were married before age 14")
 
 
 #User Story 11
@@ -267,6 +285,30 @@ def difference_days(dateData1, dateData2):
     ndateData1 = datetime.date(int(temp1[0]), int(temp1[1]), int(temp1[2]))
     ndateData2 = datetime.date(int(temp2[0]), int(temp2[1]), int(temp2[2]))
     return abs(int((ndateData1 - ndateData2).days))
+
+#User Story 14
+#This function is to show the data if there are no more than five siblings should be born at the same time
+
+
+def multipleBirthslessThan5(list_individual,list_family):
+    multipleBirthsList = []
+    for i in list_family:
+        birthList = []
+        if(i[5] != [] and len(i[5]) > 5):
+            for j in i[5]:
+                birthList.append(getBirthDateByID(list_individual, j))
+            birthListLength = len(birthList)
+            birthListSet = set(birthList)
+            listsetLength = len(birthListSet)
+            m = (birthListLength - listsetLength)
+            if( m >= 5):
+                multipleBirthsList.append(i[0])
+                print("Family with ID " + i[0] + " is not valid since it had more than 5 births.")
+    if(len(multipleBirthsList)!=0):
+        print("Families which  had more than 5 kids during the time of birth:")
+        print(multipleBirthsList)       
+    else:
+        print("No families with more than 5 kids.")
 	
 
 
