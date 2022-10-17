@@ -120,7 +120,10 @@ def birthBeforeDeathOfParents(indiListData, famListData):
     else:
         print(" These children born after death of their parent's ")
         print(dateList)
+	
 
+
+	
 #User Story 12
 #This function is to show the data if the Mother is less than 60 years older than her children and father should be less than 80 years older than his children
 
@@ -264,33 +267,141 @@ def difference_days(dateData1, dateData2):
     ndateData2 = datetime.date(int(temp2[0]), int(temp2[1]), int(temp2[2]))
     return abs(int((ndateData1 - ndateData2).days))
 	
-	
-	
-#User Story 14
-#This function is to show the data if there are no more than five siblings should be born at the same time
 
 
-def multipleBirthslessThan5(list_individual,list_family):
-    multipleBirthsList = []
-    for i in list_family:
-        birthList = []
-        if(i[5] != [] and len(i[5]) > 5):
-            for j in i[5]:
-                birthList.append(getBirthDateByID(list_individual, j))
-            birthListLength = len(birthList)
-            birthListSet = set(birthList)
-            listsetLength = len(birthListSet)
-            m = (birthListLength - listsetLength)
-            if( m >= 5):
-                multipleBirthsList.append(i[0])
-                print("Family with ID " + i[0] + " is not valid since it had more than 5 births.")
-    if(len(multipleBirthsList)!=0):
-        print("Families which  had more than 5 kids during the time of birth:")
-        print(multipleBirthsList)       
+	
+
+#User Story 15
+#This function is to show the data if the are fewer than 15 siblings in a family
+
+def lessThan15Siblings(famListData):
+    siblingList = []
+    for i in famListData:
+        if(len(i[5]) >= 15):
+            siblingList.append(i[0])
+            print("Family with id " + i[0] + " has 15 or more siblings.")
+    if(len(siblingList)==0):
+        print("No families with 15 or more siblings.")
     else:
-        print("No families with more than 5 kids.")
+        print("Families with 15 or more siblings: ")
+        print(siblingList)
+        
+#User Story 16
+#This function is to show the data if the all male members of a family should have the same last name
+
+def maleLastNames(list_indi, list_fam):
+    list1 = []
+    for j in list_fam:
+        male_names = []
+        male_names.append(getLastNameByID(list_indi, j[1]))
+        if(j[5] != []):
+            for k in j[5]:
+                if(getSexByID(list_indi, k) == 'M'):
+                    male_names.append(getLastNameByID(list_indi, k))
+        if(len(set(male_names)) != 1):
+            list1.append(j[0])
+            print('"Family ' + j[0] + ' has one or more male members with different last name(s).')
+    if(len(list1)==0):
+        print("Males in all families have the same last name.")
+    else:
+        print("Families which have one or more male members with different last name(s): ")
+        print(list1)
 
 
+def getSexByID(list_indi, id):
+    for i in list_indi:
+        if(i[0] == id):
+            return i[2]
+
+#parsing the gedcom file 
+def getcomParse(file_name):
+    f = open(file_name,'r')
+    indiValue = 0
+    famValue = 0
+    indiListData = []
+    famListData = []
+    indiData = individualList()
+    famData = familyList()
+    for line in f:
+        s = line.split()
+        if(s != []):
+            if(s[0] == '0'):
+                if(indiValue == 1):
+                    indiListData.append(indiData)
+                    indiData = individualList()
+                    indiValue = 0
+                if(famValue == 1):
+                    famListData.append(famData)
+                    famData = familyList()
+                    famValue = 0
+                if(s[1] in ['NOTE', 'HEAD', 'TRLR']):
+                    pass
+                else:
+                    if(s[2] == 'INDI'):
+                        indiValue = 1
+                        indiData[0] = (s[1])
+                    if(s[2] == 'FAM'):
+                        famValue = 1
+                        famData[0] = (s[1])
+            if(s[0] == '1'):
+                if(s[1] == 'NAME'):
+                    indiData[1] = s[2] + " " + lastName(s[3])
+                if(s[1] == 'SEX'):
+                    indiData[2] = s[2]
+                if(s[1] in ['BIRT', 'DEAT', 'MARR', 'DIV']):
+                    date_id = s[1]
+                if(s[1] == 'FAMS'):
+                    indiData[5].append(s[2])
+                if(s[1] == 'FAMC'):
+                    indiData[6] = s[2]
+                if(s[1] == 'HUSB'):
+                    famData[1] = s[2]
+                if(s[1] == 'WIFE'):
+                    famData[2] = s[2]
+                if(s[1] == 'CHIL'):
+                    famData[5].append(s[2])
+            if(s[0] == '2'):
+                if(s[1] == 'DATE'):
+                    date = s[4] + " " + s[3] + " " + s[2]
+                    if(date_id == 'BIRT'):
+                        indiData[3] = convertDateFormat(date)
+                    if(date_id == 'DEAT'):
+                        indiData[4] = convertDateFormat(date)
+                    if(date_id == 'MARR'):
+                        famData[3] = convertDateFormat(date)
+                    if(date_id == 'DIV'):
+                        famData[4] = convertDateFormat(date)
+    return indiListData, famListData
+
+
+def main(file_name):
+    indiListData, famListData = getcomParse(file_name)
+    indiListData.sort()
+    famListData.sort()
+    
+
+    for i in indiListData:
+        table = PrettyTable(["ID", "Name" , "Sex", "Birth Date", "Death Date" , "Child" , "Spouse"])
+        table.add_row([i[0] , i[1], i[2],i[3], i[4] , i[5] , i[6]])
+        print (table)
+    for i in famListData:
+        table1 = PrettyTable(["ID", "Husband's Name" , "Wife's Name"])
+        table1.add_row([i[0] , getNameUsingID(indiListData,i[1]) , getNameUsingID(indiListData,i[2]) ])
+        print (table1)
+
+    birthBeforeDeathOfParents(indiListData, famListData)
+    marriageAfter14(indiListData, famListData)
+    noBigamy(indiListData, famListData)
+    parentsNotTooOld(indiListData, famListData)
+    SiblingsSpacing(famListData, indiListData)
+    multipleBirthslessThan5(indiListData, famListData)
+    lessThan15Siblings(famListData)
+    maleLastNames(indiListData, famListData)
+    
+    
+
+fileInput= r'C:\Users\dheer\Desktop\Agile\Family.ged'
+main(fileInput)
 
 
 
