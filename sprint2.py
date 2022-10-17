@@ -123,57 +123,6 @@ def birthBeforeDeathOfParents(indiListData, famListData):
 	
 
 
-	
-#User Story 12
-#This function is to show the data if the Mother is less than 60 years older than her children and father should be less than 80 years older than his children
-
-def parentsNotTooOld(individualList, familyList):
-    list1 = []
-    for i in familyList:
-        if(i[5] != []):
-            mother_age = getAgeByID(individualList, i[2])
-            father_age = getAgeByID(individualList, i[1])
-            for j in i[5]:
-                child_age = getAgeByID(individualList, j)
-                if(mother_age - child_age >= 60):
-                    list1.append(i[2])
-                    print( + i[2] + " Mother is 60 years or more older than her child " + j)
-                if(father_age - child_age >= 80):
-                    list1.append(i[1])
-                    print(+ i[1] + " Father is 80 years or more older than his child " + j)
-    if(len(list1) == 0):
-        print("Both mother and father are not too old")
-    else:
-        print("List of aged parents when  compared to their children: ")
-        print(list1)
-
-
-        
-
-def getAgeByID(ind_list, id):
-    d_flag = 0
-    for i in ind_list:
-        if(i[0] == id):
-            b_date = i[3]
-            m = b_date.split('-')
-            b_year = int(m[0])
-            b_month = int(m[1])
-            b_date = int(m[2])
-            if(i[4] != 0):
-                d_date = i[4]
-                d_flag = 1
-    if(d_flag == 1):
-        m = d_date.split('-')
-        d_year = int(m[0])
-        d_month = int(m[1])
-        d_date = int(m[2])
-        return d_year - b_year - ((d_month, d_date) < (b_month, b_date))
-    c_date = currentDate().split('-')
-    c_year = int(c_date[0])
-    c_month = int(c_date[1])
-    c_date = int(c_date[2])
-    return c_year - b_year - ((c_month, c_date) < (b_month, b_date))
-
 #User Story 11
 #This function is to show the data if marriage has occured during marriage to another spouse
 
@@ -228,6 +177,58 @@ def noBigamy(indiListData, famListData):
     else:
         print("The individual(s) involved in Bigamy: ")
         print(noBigamyList)
+	
+
+#User Story 12
+#This function is to show the data if the Mother is less than 60 years older than her children and father should be less than 80 years older than his children
+
+def parentsNotTooOld(individualList, familyList):
+    list1 = []
+    for i in familyList:
+        if(i[5] != []):
+            mother_age = getAgeByID(individualList, i[2])
+            father_age = getAgeByID(individualList, i[1])
+            for j in i[5]:
+                child_age = getAgeByID(individualList, j)
+                if(mother_age - child_age >= 60):
+                    list1.append(i[2])
+                    print( + i[2] + " Mother is 60 years or more older than her child " + j)
+                if(father_age - child_age >= 80):
+                    list1.append(i[1])
+                    print(+ i[1] + " Father is 80 years or more older than his child " + j)
+    if(len(list1) == 0):
+        print("Both mother and father are not too old")
+    else:
+        print("List of aged parents when  compared to their children: ")
+        print(list1)
+
+
+        
+
+def getAgeByID(ind_list, id):
+    d_flag = 0
+    for i in ind_list:
+        if(i[0] == id):
+            b_date = i[3]
+            m = b_date.split('-')
+            b_year = int(m[0])
+            b_month = int(m[1])
+            b_date = int(m[2])
+            if(i[4] != 0):
+                d_date = i[4]
+                d_flag = 1
+    if(d_flag == 1):
+        m = d_date.split('-')
+        d_year = int(m[0])
+        d_month = int(m[1])
+        d_date = int(m[2])
+        return d_year - b_year - ((d_month, d_date) < (b_month, b_date))
+    c_date = currentDate().split('-')
+    c_year = int(c_date[0])
+    c_month = int(c_date[1])
+    c_date = int(c_date[2])
+    return c_year - b_year - ((c_month, c_date) < (b_month, b_date))
+
 	
 #UserStory 13
 #This function is to show the data if the Birth dates of siblings are more than 8 months apart or less than 2 days apart (twins may be born one day apart, e.g. 11:59 PM and 12:02 AM the following calendar day)
