@@ -20,6 +20,8 @@ def converttoDate(date):
         n[2] = '0' + n[2]
     return (n[0] + '-' + n[1] + '-' + n[2])
 
+#User Story 12
+#This function is to show the data if the Mother is less than 60 years older than her children and father should be less than 80 years older than his children
 
 def parentsNotTooOld(list_indi, list_fam):
     list1 = []
