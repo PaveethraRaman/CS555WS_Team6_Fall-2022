@@ -116,7 +116,7 @@ def birthBeforeDeathOfParents(indiListData, famListData):
                                 dateList.append(j)
                                 print("Individual" + j + "was born after death of father" + i[1])
     if(len(dateList) == 0):
-        print("There is no childrem  born after death of their parent's ")
+        print("There is no children  born after death of their parent's ")
     else:
         print(" These children born after death of their parent's ")
         print(dateList)
