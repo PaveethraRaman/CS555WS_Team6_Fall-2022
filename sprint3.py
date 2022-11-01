@@ -130,3 +130,66 @@ def SiblingsNotMarry(familyList):
         print(siblings_married)
     else:
         print("No siblings were married")
+
+#User story 21 
+def Individual_gender_verification(husband_id, wife_id, indiList):
+    husband_gender= False
+    wife_gender = False
+    
+    for i in range(len(indiList)):
+        individual = indiList[i]
+        if(individual[0] == husband_id):
+            if(individual[2]=='M'):
+                husband_gender = True
+
+        if(individual[0] == wife_id):
+            if(individual[2] == 'F'):
+                wife_gender = True
+    
+    return husband_gender& wife_gender
+
+def CorrectGenderForRole(individual_list, family_list):
+    incorrectGenderFamilies = []
+    length_of_family_list = len(family_list)
+    for i in range(length_of_family_list):
+        fam = family_list[i]
+        hus = fam[1]
+        wife1 = fam[2]
+        if(not(Individual_gender_verification(hus, wife1, individual_list))):
+            incorrectGenderFamilies.append(fam)
+    
+    if(len(incorrectGenderFamilies)>0):
+        print("Incorrect gender families")
+        print(incorrectGenderFamilies)
+    else:
+        print("There are no families with incorrect gender")
+
+#User story 22 
+def UniqueIDS(individual_list, family_list):
+    non_unique_individual_ids = []
+    non_unique_family_ids = []
+    all_individial_ids = GetAllIDsList(individual_list)
+    all_family_ids = GetAllIDsList(family_list)
+
+    for i in range(len(all_individial_ids)):
+        id_to_count = individual_list[i][0]
+        if (all_individial_ids.count(id_to_count) > 1):
+            non_unique_individual_ids.append(id_to_count)
+    
+    
+    for i in range(len(all_family_ids)):
+        id_to_count = individual_list[i][0]
+        if (all_family_ids.count(id_to_count) > 1):
+            non_unique_family_ids.append(id_to_count)
+
+    if(len(non_unique_family_ids)>1):
+        print("Non unique Family IDS =", non_unique_family_ids)
+    else:
+        print("There are no non unique family ids")
+    
+    if(len(non_unique_individual_ids)>1):
+        print("Non unique individual IDS =", non_unique_individual_ids)
+    else:
+        print("There are no non unique individual ids")
+
+
