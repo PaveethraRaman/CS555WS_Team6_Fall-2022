@@ -250,5 +250,135 @@ def UniqueSpouse(family_list, indiList):
             print('Family = ', non_unique[x][0], "Spouse = ", non_unique[x][1])
     else:
         print("Each spouse is belonging to a single family")
+	
+#User story 25
+def UniqueFirstNames(indiList, famList):
+    length_of_indiList = len(indiList)
+    length_of_famList = len(famList)
+
+    non_unique_children = []
+
+    for i in range(length_of_famList):
+        family = famList[i]
+
+        childrens = family[5]
+
+        #print("Family - ", family[0], "children", childrens)
+
+        if len(childrens) > 0:
+            for i in range(len(childrens)):
+                child1 = childrens[i]
+                child1_details = GetNameDOB(child1, indiList)
+
+                for j in range(i+1, len(childrens)):
+                    child2 = childrens[j]
+                    child2_details = GetNameDOB(child2, indiList)
+
+                    #print("Child1 details ", child1_details, "Child2 Details ", child2_details)
+
+                    if (child1_details[0] == child2_details[0]) or (child1_details[1] == child2_details[1]):
+                        non_unique_children.append([family[0], child1_details[0], child2_details[0]])
+    
+    if(len(non_unique_children)>0):
+        print("People with same name or Date of Birth in a family")
+        print(non_unique_children)
+    else:
+        print("There are no families with duplicate children")
+
+ #User story 27      
+def ListIndividualAges(indiList):
+    length_of_individual_list = len(indiList)
+    individual_age_data = []
+
+    for i in range(length_of_individual_list):
+        individual = indiList[i]
+        date_of_birth = individual[3]
+        year,month,date = date_of_birth.split("-")
+        birth_year = int(year)
+ 
+        today_year = int(todayDate.split("-")[0])
+        age = today_year - birth_year
+        individual_age_data.append([individual[1], age])
+        print(individual[1], "--", age)
+
+#parsing the gedcom file 
+def getcomParse(file_name):
+    f = open(file_name,'r')
+    indiValue = 0
+    famValue = 0
+    indiListData = []
+    famListData = []
+    indiData = individualList()
+    famData = familyList()
+    for line in f:
+        s = line.split()
+        if(s != []):
+            if(s[0] == '0'):
+                if(indiValue == 1):
+                    indiListData.append(indiData)
+                    indiData = individualList()
+                    indiValue = 0
+                if(famValue == 1):
+                    famListData.append(famData)
+                    famData = familyList()
+                    famValue = 0
+                if(s[1] in ['NOTE', 'HEAD', 'TRLR']):
+                    pass
+                else:
+                    if(s[2] == 'INDI'):
+                        indiValue = 1
+                        indiData[0] = (s[1])
+                    if(s[2] == 'FAM'):
+                        famValue = 1
+                        famData[0] = (s[1])
+            if(s[0] == '1'):
+                if(s[1] == 'NAME'):
+                    indiData[1] = s[2] + " " + lastName(s[3])
+                if(s[1] == 'SEX'):
+                    indiData[2] = s[2]
+                if(s[1] in ['BIRT', 'DEAT', 'MARR', 'DIV']):
+                    date_id = s[1]
+                if(s[1] == 'FAMS'):
+                    indiData[5].append(s[2])
+                if(s[1] == 'FAMC'):
+                    indiData[6] = s[2]
+                if(s[1] == 'HUSB'):
+                    famData[1] = s[2]
+                if(s[1] == 'WIFE'):
+                    famData[2] = s[2]
+                if(s[1] == 'CHIL'):
+                    famData[5].append(s[2])
+            if(s[0] == '2'):
+                if(s[1] == 'DATE'):
+                    date = s[4] + " " + s[3] + " " + s[2]
+                    if(date_id == 'BIRT'):
+                        indiData[3] = convertDateFormat(date)
+                    if(date_id == 'DEAT'):
+                        indiData[4] = convertDateFormat(date)
+                    if(date_id == 'MARR'):
+                        famData[3] = convertDateFormat(date)
+                    if(date_id == 'DIV'):
+                        famData[4] = convertDateFormat(date)
+    return indiListData, famListData
+
+
+def main(file_name):
+    indiListData, famListData = getcomParse(file_name)
+    indiListData.sort()
+    famListData.sort()
+    # print("individual list -> ", indiListData);
+    # print("Family List data -> ", famListData);
+    NoMarriagesToDescendents(famListData)
+    SiblingsNotMarry(famListData)
+    CorrectGenderForRole(indiListData, famListData )
+    UniqueIDS(indiListData, famListData)
+    UniqueNameAndBirthDate(indiListData)
+    UniqueSpouse(famListData, indiListData)
+    UniqueFirstNames(indiListData, famListData)
+    ListIndividualAges(indiListData)
+
+
+fileInput= r'C:\Users\dheer\Desktop\Agile\Family.ged'
+main(fileInput)
 
 
