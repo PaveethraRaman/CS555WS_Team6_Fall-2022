@@ -1,0 +1,57 @@
+PS C:\Users\dheer> & C:/Users/dheer/AppData/Local/Microsoft/WindowsApps/python3.9.exe c:/Users/dheer/Desktop/Agile/Sprint03.py
+No parents married their descendents
+No siblings were married
+There are no families with incorrect gender
+There are no non unique family ids
+There are no non unique individual ids
+There are no individuals with more than one birth date and name
+Spouses beloging to different families are
+Family =  @F10@ Spouse =  Jessy Wilson
+Family =  @F11@ Spouse =  Jessy Wilson
+Family =  @F4@ Spouse =  Sandra Taylor
+Family =  @F5@ Spouse =  Sandra Taylor
+People with same name or Date of Birth in a family
+[['@F15@', 'Rumy Taylor', 'Christopher Taylor']]
+Peter Kenn -- 65
+Alysa Wan -- 56
+Daisy Kenn -- 28
+Miller Kenn -- 27
+Alex Taylor -- 78
+Jimmy Taylor -- 41
+Mary Jones -- 39
+Samy Taylor -- 11
+Tom Taylor -- 12
+Wannesa Kenn -- 75
+Ellisa Smith -- 28
+James Davis -- 82
+Nike Davis -- 47
+Nancy Lee -- 42
+Davidson Davis -- 19
+Jessy Wilson -- 46
+Philip Carter -- 21
+Jim Ford -- 73
+Ruther Jackson -- 69
+Patrica Ford -- 40
+Xenn Taylor -- 44
+Henry Ford -- 39
+Ashley Xenn -- 19
+Lily Xenn -- 13
+Kim Ford -- 38
+Tiara Ford -- 39
+Edward Steves -- 42
+Victoria Steves -- 18
+Kenny Steves -- 10
+Jensing Taylor -- 48
+Charlotte Taylor -- 17
+Claire Taylor -- 44
+Amy Kenn -- 54
+Finny Taylor -- 42
+Rumy Taylor -- 19
+Christopher Taylor -- 19
+Issac Allen -- 73
+Harry Ford -- 22
+John Ford -- 92
+Elle Wan -- 88
+Sandra Taylor -- 71
+Nathan Kenn -- 98
+Hannah Wan -- 90
