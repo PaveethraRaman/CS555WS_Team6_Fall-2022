@@ -191,5 +191,64 @@ def UniqueIDS(individual_list, family_list):
         print("Non unique individual IDS =", non_unique_individual_ids)
     else:
         print("There are no non unique individual ids")
+	
+#User story 23
+def UniqueNameAndBirthDate(individual_list):
+    non_unique = []
+    length_of_individual_list = len(individual_list)
+
+    for i in range(length_of_individual_list):
+        individual = individual_list[i]
+        name = individual[1]
+        birthdate = individual[3]
+
+        count = 0
+
+        for j in range(length_of_individual_list):
+            if (individual == individual_list[j][1]):
+                if(birthdate == individual_list[j][3]):
+                    count  = count + 1
+                else:
+                    count = count+1
+            
+        if count > 1:
+            non_unique.appen(individual[1])
+    
+    if(len(non_unique)>0):
+        print("Individual with more than ine birthdate")
+        print(non_unique)
+    else:
+        print("There are no individuals with more than one birth date and name")
+
+#User story 24
+def UniqueSpouse(family_list, indiList):
+    non_unique = []
+    length_of_family_list = len(family_list)
+
+    for i in range(length_of_family_list):
+        count = 0
+        family = family_list[i]
+
+        spouse = family[2]
+        family_id = family[0]
+
+        for j in range(length_of_family_list):
+            fam = family_list[j]
+            if(fam[2] == spouse):
+                if(fam[0] == family_id):
+                    count = count + 1
+                else:
+                    count = count+1
+        
+        if(count>1):
+            spouse_name = getNameFromID(spouse, indiList)
+            non_unique.append([family_id, spouse_name])
+    
+    if(len(non_unique)>0):
+        print("Spouses beloging to different families are")
+        for x in range(len(non_unique)):
+            print('Family = ', non_unique[x][0], "Spouse = ", non_unique[x][1])
+    else:
+        print("Each spouse is belonging to a single family")
 
 
