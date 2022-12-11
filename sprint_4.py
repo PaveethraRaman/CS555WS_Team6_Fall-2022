@@ -230,4 +230,205 @@ def LivingMarried(famList, indiList):
     print("Alive married individuals")
     for person in alive_individuals:
         print(getNameFromID(person, indiList))
+# userstory 31
+def LivingSingles(famList, indiList):
+    length_of_individual_list = len(indiList)
+    length_of_family_list = len(famList)
 
+    Singles = set()
+
+    for i in range(0, length_of_individual_list):
+        individual = indiList[i]
+
+        individual_is_alive = isAlive(individual[0], indiList)
+        individual_DOB = getDOB(individual[0], indiList)
+        individual_age = getAge(individual_DOB)
+        
+        if((individual_is_alive) and individual_age > 30):
+
+            isSingle = True
+            for j in range(0, length_of_family_list):
+                family = famList[j]
+                parent1 = family[1]
+                parent2 = family[2]
+                
+                if ((parent1 == individual[0]) or (parent2 == individual[0])):
+                    isSingle = False
+            
+            if (isSingle == True):
+                Singles.add(individual[0])
+    
+    print("Living Singles with age > 30 are")
+    for person in Singles:
+        print( getNameFromID(person, indiList))
+
+# userstory 33 
+
+def ListOrphans(famList, indiList):
+    length_of_individual_list = len(indiList)
+    length_of_family_list = len(famList)
+
+    Orphans = set()
+
+    for i in range(length_of_family_list):
+        family = famList[i]
+
+        parent1 = family[1]
+        parent2 = family[2]
+
+        children= family[5]
+
+        parent1_isAlive = isAlive(parent1, indiList)
+        parent2_isAlive = isAlive(parent2, indiList)
+
+        if((parent1_isAlive == False) and (parent2_isAlive == False)):
+            # both parents are not alive
+
+            for c in range(0, len(children)):
+                child = children[c]
+                child_dob = getDOB(child, indiList)
+                child_age = getAge(child_dob)
+              
+                if(child_age < 18):
+                    Orphans.add(child)
+
+
+    if(len(Orphans) > 0):
+        print("Orphans are")
+        for person in Orphans:
+            print(getNameFromID(person, indiList))
+    else:
+        print("There are no orphans in the family tree")
+
+# userstory 34
+def ListCouplesWithLargeAgeDiff(famList, indiList):
+    length_of_individual_list = len(indiList)
+    length_of_family_list = len(famList)
+
+
+    couples_greater = []
+
+    for i in range(0, length_of_family_list):
+        family = famList[i]
+        person1 = family[1]
+        person2 = family[2]
+
+        person1_dob = getDOB(person1, indiList)
+        person2_dob = getDOB(person2, indiList)
+
+        person1_age = getAge(person1_dob)
+        person2_age = getAge(person2_dob)
+        #print(person1_age, person2_age)
+        if((person1_age >= 2 * person2_age)):
+            couples_greater.append([person1, person2])
+        elif((person2_age >= 2*person1_age)):
+            couples_greater.append([person1, person2])
+    
+    if(len(couples_greater)>0):
+        print("Couples with twice age diff")
+        for couple in couples_greater:
+            print(couple)
+    else:
+        print("There are no couples with twice age difference")
+
+# userstory 35
+
+def RecentBirths(indiList):
+    today_date = datetime.date.today()
+    length_of_individual_list = len(indiList)
+
+    RecentBirthIndividuals = set()
+    for i in range(0, length_of_individual_list):
+        individual = indiList[i]
+
+        individual_DOB = getDOB(individual[0], indiList)
+        difference = today_date - individual_DOB
+        if( difference.days <30):
+            RecentBirthIndividuals.add(individual[0])
+    
+    if(len(RecentBirthIndividuals) > 0):
+
+        for person in RecentBirthIndividuals:
+            print(getNameFromID(person, indiList))
+    else:
+        print("There are no persons born recently in 30days")
+
+
+#parsing the gedcom file 
+def getcomParse(file_name):
+    f = open(file_name,'r')
+    indiValue = 0
+    famValue = 0
+    indiListData = []
+    famListData = []
+    indiData = individualList()
+    famData = familyList()
+    for line in f:
+        s = line.split()
+        if(s != []):
+            if(s[0] == '0'):
+                if(indiValue == 1):
+                    indiListData.append(indiData)
+                    indiData = individualList()
+                    indiValue = 0
+                if(famValue == 1):
+                    famListData.append(famData)
+                    famData = familyList()
+                    famValue = 0
+                if(s[1] in ['NOTE', 'HEAD', 'TRLR']):
+                    pass
+                else:
+                    if(s[2] == 'INDI'):
+                        indiValue = 1
+                        indiData[0] = (s[1])
+                    if(s[2] == 'FAM'):
+                        famValue = 1
+                        famData[0] = (s[1])
+            if(s[0] == '1'):
+                if(s[1] == 'NAME'):
+                    indiData[1] = s[2] + " " + lastName(s[3])
+                if(s[1] == 'SEX'):
+                    indiData[2] = s[2]
+                if(s[1] in ['BIRT', 'DEAT', 'MARR', 'DIV']):
+                    date_id = s[1]
+                if(s[1] == 'FAMS'):
+                    indiData[5].append(s[2])
+                if(s[1] == 'FAMC'):
+                    indiData[6] = s[2]
+                if(s[1] == 'HUSB'):
+                    famData[1] = s[2]
+                if(s[1] == 'WIFE'):
+                    famData[2] = s[2]
+                if(s[1] == 'CHIL'):
+                    famData[5].append(s[2])
+            if(s[0] == '2'):
+                if(s[1] == 'DATE'):
+                    date = s[4] + " " + s[3] + " " + s[2]
+                    if(date_id == 'BIRT'):
+                        indiData[3] = convertDateFormat(date)
+                    if(date_id == 'DEAT'):
+                        indiData[4] = convertDateFormat(date)
+                    if(date_id == 'MARR'):
+                        famData[3] = convertDateFormat(date)
+                    if(date_id == 'DIV'):
+                        famData[4] = convertDateFormat(date)
+    return indiListData, famListData
+
+
+def main(file_name):
+    indiListData, famListData = getcomParse(file_name)
+    indiListData.sort()
+    famListData.sort()
+    # print("individual list -> ", indiListData);
+    # print("Family List data -> ", famListData);
+    CorrespondingEntries(famListData, indiListData)
+    OrderSiblingsByAge(famListData, indiListData)
+    DeceasedIndividuals(indiListData)
+    LivingMarried(famListData, indiListData)
+    LivingSingles(famListData, indiListData)
+    ListOrphans(famListData, indiListData)
+    ListCouplesWithLargeAgeDiff(famListData, indiListData)
+    RecentBirths(indiListData) 
+
+fileInput= r'C:\Users\dheer\Desktop\Agile\Family.ged'
+main(fileInput)
